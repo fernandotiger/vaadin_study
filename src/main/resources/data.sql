@@ -1,0 +1,1 @@
+create table my_test (id int, name varchar(200))
