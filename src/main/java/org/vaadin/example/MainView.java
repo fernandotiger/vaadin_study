@@ -1,13 +1,16 @@
 package org.vaadin.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.example.utils.UniversLogoLayoutFactory;
 
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
@@ -31,7 +34,7 @@ public class MainView extends AppLayout  {
 	//private UniversLogoLayoutFactory logoLayout;
 	
 	public MainView() {
-	  
+	 
 		DrawerToggle toggle = new DrawerToggle();
 
 	    H1 title = new H1("MyApp");
@@ -45,6 +48,8 @@ public class MainView extends AppLayout  {
 	    addToNavbar(toggle, title);setContent(new Label("My content"));
 	}
   
+	
+	
 	private Tabs getTabs() {
 	    Tabs tabs = new Tabs();
 	    tabs.add(
