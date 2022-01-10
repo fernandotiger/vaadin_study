@@ -4,38 +4,37 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 import org.vaadin.example.MainView;
-import org.vaadin.example.StudentMainLayoutFactory;
+import org.vaadin.example.model.dto.ActionPage;
+import org.vaadin.example.views.studentfactory.StudentListLayoutFactory;
+import org.vaadin.example.views.studentfactory.StudentMainLayoutFactory;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.charts.model.Navigator;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
 
 @Route(value = "university/student", layout = MainView.class)
-public class StudentView extends VerticalLayout{
+public class StudentView extends VerticalLayout implements StudentViewCrudListener{
 
 	private static final long serialVersionUID = -5512902352411892964L;
 
 	private final Map<Tab, Component> contents = new LinkedHashMap<>();
-	
-	
+		
 	private StudentMainLayoutFactory studentMainLayoutFactory;
 	
-	public StudentView(@Autowired StudentMainLayoutFactory studentMainLayoutFactory) {
+	private StudentListLayoutFactory studentListLayoutFactory;
+	
+	private Tabs tabs;
+	
+	public StudentView(@Autowired StudentMainLayoutFactory studentMainLayoutFactory, @Autowired StudentListLayoutFactory studentListLayoutFactory) {
 		this.studentMainLayoutFactory = studentMainLayoutFactory;
+		this.studentListLayoutFactory = studentListLayoutFactory;
 		this.buildContentAndTabs();
-		Tabs tabs = new Tabs();
+		tabs = new Tabs();
 		// display area
         final Div display = new Div();
         display.setSizeFull();
@@ -55,17 +54,26 @@ public class StudentView extends VerticalLayout{
     }
 	
 	private void buildContentAndTabs() {
-        final String[] data = new String[] {
-            "Main",
-            "All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.",
-            "Show Students",
-            "Show Students here !"
-        };
         // create tabs and matching contents
-        for (int zmp1 = 0; zmp1 < data.length; zmp1 += 2) this.contents.put(
-                new Tab(data[zmp1]),
-                new Span(studentMainLayoutFactory.createComponent())
-            );
+        this.contents.put(new Tab("Main"), new Span(studentMainLayoutFactory.createComponent(this)));
+        this.contents.put(new Tab("Show Students"), new Span(studentListLayoutFactory.createComponent(this)));
     }
+	
+	@Override
+	public void navigateNextPage(ActionPage actionPage) {
+		tabs.setSelectedIndex(actionPage.getPageIndex());
+		
+		switch (actionPage.getPageIndex()) {
+		case 0:
+			actionPage.refreshPage(studentMainLayoutFactory);
+			break;
+		case 1:
+			actionPage.refreshPage(studentListLayoutFactory);
+			break;
+		default:
+			break;
+		}
+	}
+
 	
 }

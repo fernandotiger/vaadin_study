@@ -1,9 +1,13 @@
 package org.vaadin.example;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.example.utils.UniversLogoLayoutFactory;
+import org.vaadin.example.views.StudentView;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -45,7 +49,8 @@ public class MainView extends AppLayout  {
 	    Tabs tabs = getTabs();
 	    
 	    addToDrawer(tabs);
-	    addToNavbar(toggle, title);setContent(new Label("My content"));
+	    addToNavbar(toggle, title);
+	    setContent(new Label("My content"));
 	}
   
 	
@@ -53,20 +58,20 @@ public class MainView extends AppLayout  {
 	private Tabs getTabs() {
 	    Tabs tabs = new Tabs();
 	    tabs.add(
-	    		createTab(VaadinIcon.USER_HEART, "Student"),
-	    		createTab(VaadinIcon.PACKAGE, "University"),
-			      createTab(VaadinIcon.DASHBOARD, "Dashboard"),
-			      createTab(VaadinIcon.CART, "Orders"),
+	    		createTab(VaadinIcon.USER_HEART, "Student", StudentView.class),
+	    		createTab(VaadinIcon.PACKAGE, "University", null),
+			      createTab(VaadinIcon.DASHBOARD, "Dashboard", null),
+			      createTab(VaadinIcon.CART, "Orders", null),
 			      
-			      createTab(VaadinIcon.RECORDS, "Documents"),
-			      createTab(VaadinIcon.LIST, "Tasks"),
-			      createTab(VaadinIcon.CHART, "Analytics")
+			      createTab(VaadinIcon.RECORDS, "Documents", null),
+			      createTab(VaadinIcon.LIST, "Tasks", null),
+			      createTab(VaadinIcon.CHART, "Analytics", null)
 	    );
 	    tabs.setOrientation(Tabs.Orientation.VERTICAL);
 	    return tabs;
 	}
 
-	private Tab createTab(VaadinIcon viewIcon, String viewName) {
+	private Tab createTab(VaadinIcon viewIcon, String viewName, Class<? extends Component> clazz) {
 	    Icon icon = viewIcon.create();
 	    icon.getStyle()
 	      .set("box-sizing", "border-box")
@@ -77,7 +82,9 @@ public class MainView extends AppLayout  {
 	    RouterLink link = new RouterLink();
 	    link.add(icon, new Span(viewName));
 	    // Demo has no routes
-	    // link.setRoute(viewClass.java);
+	    if(Objects.nonNull(clazz)) {
+	    	link.setRoute(clazz);
+	    }
 	    link.setTabIndex(-1);
 
 	    return new Tab(link);

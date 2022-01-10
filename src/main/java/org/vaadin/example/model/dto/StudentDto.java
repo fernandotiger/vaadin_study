@@ -2,7 +2,7 @@ package org.vaadin.example.model.dto;
 
 import org.vaadin.example.model.Student;
 
-public class StudentDto {
+public class StudentDto implements ModelDto{
 
 	private Integer id;
 	
@@ -21,6 +21,16 @@ public class StudentDto {
 		student.setLastName(lastName);
 		student.setAge(age);
 		student.setGender(gender);
+		return student;
+	}
+	
+	public static StudentDto getDto(Student entity) {
+		StudentDto student = new StudentDto();
+		student.setId(entity.getId());
+		student.setFirstName(entity.getFirstName());
+		student.setLastName(entity.getLastName());
+		student.setAge(entity.getAge());
+		student.setGender(entity.getGender());
 		return student;
 	}
 

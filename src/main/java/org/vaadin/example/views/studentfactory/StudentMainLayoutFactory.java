@@ -1,11 +1,14 @@
-package org.vaadin.example;
+package org.vaadin.example.views.studentfactory;
+
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.example.Enums.Genders;
-import org.vaadin.example.model.Student;
+import org.vaadin.example.model.dto.ActionPage;
+import org.vaadin.example.model.dto.ModelDto;
 import org.vaadin.example.model.dto.StudentDto;
 import org.vaadin.example.service.StudentService;
+import org.vaadin.example.views.StudentViewCrudListener;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -18,16 +21,16 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
-import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
 
 
 @org.springframework.stereotype.Component
-public class StudentMainLayoutFactory {
+public class StudentMainLayoutFactory implements ViewFactoryAction{
 
 	@Autowired
 	private StudentService studentService;
-	@Configurable
+	
+	private StudentMainLayout studentMainLayout;
+	
 	private class StudentMainLayout extends VerticalLayout {
 		
 		private TextField firstName;		
@@ -39,6 +42,12 @@ public class StudentMainLayoutFactory {
 		private Binder<StudentDto> binder;		
 		private StudentDto studentDto;
 		
+		private StudentViewCrudListener studentViewListener;
+		
+		public StudentMainLayout(StudentViewCrudListener studentViewListener) {
+			this.studentViewListener = studentViewListener;
+		}
+		
 		public StudentMainLayout init() {
 			firstName = new TextField("First Name");		
 			lastName = new TextField("Last Name");				
@@ -49,17 +58,17 @@ public class StudentMainLayoutFactory {
 			buttonSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 			buttonClear = new Button("Clear");
 			buttonSave.addClickListener(event -> {
-				System.out.println(binder.getBean());
+				
 				try {
 					binder.writeBean(studentDto);
 				} catch (ValidationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println(studentDto.getFirstName());
 				Notification notification = Notification.show("Data saved successfuly");
 				notification.setPosition(Notification.Position.MIDDLE);
 				studentService.save(studentDto);
+				clearFields();
+				this.studentViewListener.navigateNextPage(new ActionPage(1));
 			});
 			buttonClear.addClickListener(event ->{
 				clearFields();
@@ -71,6 +80,15 @@ public class StudentMainLayoutFactory {
 			firstName.setValue("");
 			lastName.setValue("");
 			age.setValue("");
+			gender.clear();
+			studentDto = new StudentDto();
+		}
+		
+		private void refreshFields(StudentDto studentDto) {
+			this.studentDto.setId(studentDto.getId());
+			firstName.setValue(studentDto.getFirstName());
+			lastName.setValue(studentDto.getLastName());
+			age.setValue(String.valueOf(studentDto.getAge()));
 			gender.clear();
 		}
 
@@ -93,7 +111,15 @@ public class StudentMainLayoutFactory {
 		}
 	}
 	
-	public Component createComponent() {
-		return new StudentMainLayout().init().bind().layout();
+	public Component createComponent(StudentViewCrudListener studentViewListener) {
+		studentMainLayout = new StudentMainLayout(studentViewListener).init().bind();
+		return studentMainLayout.layout();
+	}
+	
+	public void refresh(Optional<ModelDto> optionalModelDto) {
+		if(optionalModelDto.isPresent()) {
+			studentMainLayout.refreshFields((StudentDto) optionalModelDto.get());
+		}
+		
 	}
 }

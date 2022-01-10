@@ -1,5 +1,7 @@
 package org.vaadin.example.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +12,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 @Entity(name = "student")
-public class Student {
+public class Student implements Serializable{
+
+	private static final long serialVersionUID = 2942711878087590380L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
