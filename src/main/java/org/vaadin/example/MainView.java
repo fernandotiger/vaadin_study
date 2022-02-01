@@ -2,33 +2,22 @@ package org.vaadin.example;
 
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.vaadin.example.utils.UniversLogoLayoutFactory;
-import org.vaadin.example.views.StudentView;
+import org.vaadin.example.views.course.CourseView;
+import org.vaadin.example.views.student.StudentView;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.theme.Theme;
 
 @Route("university") 
 @PageTitle("Home")
@@ -59,7 +48,7 @@ public class MainView extends AppLayout  {
 	    Tabs tabs = new Tabs();
 	    tabs.add(
 	    		createTab(VaadinIcon.USER_HEART, "Student", StudentView.class),
-	    		createTab(VaadinIcon.PACKAGE, "University", null),
+	    		createTab(VaadinIcon.PACKAGE, "Course", CourseView.class),
 			      createTab(VaadinIcon.DASHBOARD, "Dashboard", null),
 			      createTab(VaadinIcon.CART, "Orders", null),
 			      

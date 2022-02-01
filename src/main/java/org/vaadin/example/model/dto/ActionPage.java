@@ -2,7 +2,7 @@ package org.vaadin.example.model.dto;
 
 import java.util.Optional;
 
-import org.vaadin.example.views.studentfactory.ViewFactoryAction;
+import org.vaadin.example.views.ReloadFormAction;
 
 public class ActionPage {
 
@@ -19,7 +19,7 @@ public class ActionPage {
 		this.dtoObject = dtoObject;
 	}
 	
-	public void refreshPage(ViewFactoryAction viewFactoryAction) {
+	public void refreshPage(ReloadFormAction viewFactoryAction) {
 		viewFactoryAction.refresh(Optional.ofNullable(dtoObject));
 	}
 	

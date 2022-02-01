@@ -1,4 +1,4 @@
-package org.vaadin.example.views.studentfactory;
+package org.vaadin.example.views.course.factory;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -8,7 +8,8 @@ import org.vaadin.example.model.dto.ActionPage;
 import org.vaadin.example.model.dto.ModelDto;
 import org.vaadin.example.model.dto.StudentDto;
 import org.vaadin.example.service.StudentService;
-import org.vaadin.example.views.StudentViewCrudListener;
+import org.vaadin.example.views.NavigationCrudListener;
+import org.vaadin.example.views.ReloadListViewAction;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -20,7 +21,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 
 @org.springframework.stereotype.Component
-public class StudentListLayoutFactory implements ViewFactoryAction{
+public class CourseListLayoutFactory implements ReloadListViewAction{
 
 	@Autowired
 	private StudentService studentService;
@@ -35,9 +36,9 @@ public class StudentListLayoutFactory implements ViewFactoryAction{
 		private Button buttonRemove;	
 		private StudentDto studentDto;
 		
-		private StudentViewCrudListener studentViewListener;
+		private NavigationCrudListener studentViewListener;
 		
-		public StudentMainLayout(StudentViewCrudListener studentViewListener) {
+		public StudentMainLayout(NavigationCrudListener studentViewListener) {
 			this.studentViewListener = studentViewListener;
 		}
 		
@@ -103,13 +104,13 @@ public class StudentListLayoutFactory implements ViewFactoryAction{
 	}
 	
 	
-	public Component createComponent(StudentViewCrudListener studentViewListener) {
+	public Component createComponent(NavigationCrudListener studentViewListener) {
 		studentMainLayout = new StudentMainLayout(studentViewListener).init();
 		return studentMainLayout.layout();
 	}
 	
 	@Override
-	public void refresh(Optional<ModelDto> modelDto) {
+	public void refresh() {
 		studentMainLayout.refresh();
 	}
 }

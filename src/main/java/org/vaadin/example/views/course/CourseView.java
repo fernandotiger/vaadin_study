@@ -1,13 +1,15 @@
-package org.vaadin.example.views;
+package org.vaadin.example.views.course;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.MainView;
 import org.vaadin.example.model.dto.ActionPage;
-import org.vaadin.example.views.studentfactory.StudentListLayoutFactory;
-import org.vaadin.example.views.studentfactory.StudentMainLayoutFactory;
+import org.vaadin.example.views.NavigationCrudListener;
+import org.vaadin.example.views.course.factory.CourseListLayoutFactory;
+import org.vaadin.example.views.course.factory.CourseMainLayoutFactory;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
@@ -17,22 +19,22 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "university/student", layout = MainView.class)
-public class StudentView extends VerticalLayout implements StudentViewCrudListener{
+@Route(value = "university/course", layout = MainView.class)
+public class CourseView  extends VerticalLayout implements NavigationCrudListener{
 
-	private static final long serialVersionUID = -5512902352411892964L;
-
-	private final Map<Tab, Component> contents = new LinkedHashMap<>();
-		
-	private StudentMainLayoutFactory studentMainLayoutFactory;
+	private static final long serialVersionUID = 385803135203621915L;
 	
-	private StudentListLayoutFactory studentListLayoutFactory;
+	private final Map<Tab, Component> contents = new LinkedHashMap<>();
 	
 	private Tabs tabs;
 	
-	public StudentView(@Autowired StudentMainLayoutFactory studentMainLayoutFactory, @Autowired StudentListLayoutFactory studentListLayoutFactory) {
-		this.studentMainLayoutFactory = studentMainLayoutFactory;
-		this.studentListLayoutFactory = studentListLayoutFactory;
+	private CourseMainLayoutFactory courseMainLayoutFactory;
+	
+	private CourseListLayoutFactory courseListLayoutFactory;
+	
+	public CourseView(@Autowired CourseMainLayoutFactory courseMainLayoutFactory, @Autowired CourseListLayoutFactory courseListLayoutFactory) {
+		this.courseMainLayoutFactory = courseMainLayoutFactory;
+		this.courseListLayoutFactory = courseListLayoutFactory;
 		this.buildContentAndTabs();
 		tabs = new Tabs();
 		// display area
@@ -51,12 +53,13 @@ public class StudentView extends VerticalLayout implements StudentViewCrudListen
         tabs.add(this.contents.keySet().toArray(new Tab[0]));
         
         add(tabs, display);
-    }
+	}
 	
+
 	private void buildContentAndTabs() {
         // create tabs and matching contents
-        this.contents.put(new Tab("Main"), new Span(studentMainLayoutFactory.createComponent(this)));
-        this.contents.put(new Tab("Show Students"), new Span(studentListLayoutFactory.createComponent(this)));
+        this.contents.put(new Tab("Main"), new Span(courseMainLayoutFactory.createComponent(this)));
+        this.contents.put(new Tab("Show Courses"), new Span(courseListLayoutFactory.createComponent(this)));
     }
 	
 	@Override
@@ -65,15 +68,15 @@ public class StudentView extends VerticalLayout implements StudentViewCrudListen
 		
 		switch (actionPage.getPageIndex()) {
 		case 0:
-			actionPage.refreshPage(studentMainLayoutFactory);
+			courseMainLayoutFactory.refresh(Optional.ofNullable(actionPage.getDtoObject()));;
 			break;
 		case 1:
-			actionPage.refreshPage(studentListLayoutFactory);
+			courseListLayoutFactory.refresh();
 			break;
 		default:
 			break;
 		}
+		
 	}
 
-	
 }

@@ -2,7 +2,7 @@ package org.vaadin.example.views;
 
 import org.vaadin.example.model.dto.ActionPage;
 
-public interface StudentViewCrudListener {
+public interface NavigationCrudListener {
 
 	void navigateNextPage(ActionPage actionPage);
 	
